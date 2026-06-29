@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kognitivna psihologija – Kviz (50 vprašanj)</title>
+  <style>
+    *{box-sizing:border-box;font-family:system-ui,sans-serif}
+    body{margin:0;padding:2rem;background:#f4f4f7;display:flex;flex-direction:column;align-items:center}
+    h1{text-align:center;margin-bottom:1rem}
+    #quiz-card{background:#fff;border-radius:1rem;padding:2rem;max-width:900px;width:100%;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+    .question{font-size:1.15rem;margin-bottom:1rem}
+    .answers{display:flex;flex-direction:column;gap:.6rem}
+    button.answer{padding:.7rem 1rem;border:2px solid #ddd;border-radius:.5rem;background:#fafafa;cursor:pointer;transition:background .2s;text-align:left}
+    button.answer:hover{background:#eaeaea}
+    button.correct{background:#d4f9e1;border-color:#2ecc71}
+    button.wrong{background:#ffd6d6;border-color:#e74c3c}
+    #explanation{display:none;margin-top:1rem;padding:1rem;background:#eef4ff;border-left:4px solid #3b82f6;border-radius:.25rem}
+    #next-btn{margin-top:2rem;padding:.8rem 2rem;font-size:1rem}
+    #score{font-weight:bold;margin-bottom:.8rem}
+  </style>
+</head>
+<body>
+  <h1>Kviz – Kognitivna psihologija (50 vprašanj)</h1>
+  <div id="quiz-card">
+    <div id="score"></div>
+    <div id="question" class="question">Nalaganje…</div>
+    <div id="answers" class="answers"></div>
+    <div id="explanation"></div>
+    <button id="next-btn" style="display:none;">Naslednje vprašanje ▶</button>
+  </div>quizData
+<script>
+const quizData=[
+   {q:"Kodiranje v dolgoročnem spominu je najbolj učinkovito, ko …",options:["informacije večkrat mehansko ponovimo","povežemo novo informacijo z obstoječo semantično mrežo","učenje poteka tik pred spanjem","ignoriramo emocionalni kontekst"],correct:1,expl:"Elaborativno (semantično) ponavljanje je močnejše od maintenance rehearsal."},
+  {q:"Katero področje je klasično povezano s konsolidacijo epizodičnega spomina?",options:["hipokampus","amigdala","premotorni korteks","parahipokampalni gyrus"],correct:0,expl:"Hipokampus koordinira konsolidacijo v korteks."},
+  {q:"Fenomen 'tip-of-the-tongue' kaže na razliko med …",options:["hranjenjem in priklicem","implicitnim in eksplicitnim spominom","proceduralnim in deklarativnim spominom","kratkoročnim in senzornim spominom"],correct:0,expl:"Informacija je shranjena, a priklic ni takoj uspešen."},
+  {q:"Kateri test meri implicitni spomin brez zavestnega priklica?",options:["dopolnjevanje besednih korenin","proste asociacije","serialni red","samoocena"],correct:0,expl:"Word stem completion – prepoznava brez zavedanja."},
+  {q:"Ebbinghausova krivulja pozabljanja kaže, da največ informacij izgubimo …",options:["v prvih urah","med 1 in 2 dnem","po enem tednu","po enem mesecu"],correct:0,expl:"Eksponentno hitro pozabljanje takoj po učenju."},
+  {q:"Osnovna enota semantičnega spomina po Collins & Quillian modelu je …",options:["vozlišče koncepta","epizoda","shema","ikona"],correct:0,expl:"Koncepti so hierarhično povezani v mreži."},
+  {q:"Po teoriji razširjenega aktiviranja (spreading activation) latenca pri prepoznavanju besede je krajša, če je …",options:["povezana s predhodno prime besedo","nepovezana","nasprotnik pomena","homonim"],correct:0,expl:"Semantično primiranje pospeši reakcijski čas."},
+  {q:"Vsakodnevno spominjanje, kaj si zajtrkoval, je primer …",options:["epizodičnega spomina","semantičnega spomina","proceduralnega spomina","senzornega spomina"],correct:0,expl:"Epizodični – specifičen čas in prostor."},
+  {q:"Po teoriji dvojnega kodiranja Paivio verbalni in slikovni kod …",options:["sta neodvisna in se lahko medsebojno okrepita","sta popolnoma prekrivna","sta v sporu","sta del istega procesorja"],correct:0,expl:"Besede + slike → boljši priklic."},
+  {q:"Izrek 'levels of processing' Craik & Lockhart trdi, da globlje kot obdelamo informacijo …",options:["močnejši bo kasnejši spomin","hitreje jo pozabimo","ni razlike","je več interferenc"],correct:0,expl:"Semantična obdelava > površinska."},
+  {q:"Kaj je retroaktivna interferenca?",options:["nova informacija ovira priklic stare","stara informacija ovira učenje nove","pozabljanje zaradi časa","pozabljanje zaradi travme"],correct:0,expl:"Kasnejše učenje moti prejšnje spomine."},
+  {q:"Preverjanje spomina s prepoznavo (recognition) je navadno … kot prosta reprodukcija (recall).",options:["lažje","težje","enako zahtevno","odvisno od motivacije"],correct:0,expl:"Prepoznavanje zahteva samo identifikacijo, ne generiranje."},
+  {q:"Kateri EEG val je povezan z uspešnim kodiranjem v LTM (subsequent memory effect)?",options:["pozitivnost okoli 400 ms (P300)","pozitivnost okoli 600 ms (LPC)","negativnost N100","pozitiven slow wave"],correct:1,expl:"Večja LPC napoveduje boljši priklic."},
+  {q:"V kateri fazi REM spanja se pogosto utrjuje proceduralni spomin?",options:["prvi REM cikel","zgodnji NREM","zadnji REM cikli","globok N3"],correct:2,expl:"Kasnejši REM cikli krepijo motorično učenje."},
+  {q:"Brocin predel (BA 44/45) je povezan prvenstveno z …",options:["govorno produkcijo","razumevanjem jezika","artikulacijsko motorično kontrolo","vidno analizo črk"],correct:0,expl:"Lezije → Brocina afazija (ne tekoč govor)."},
+  {q:"Wernickejeva afazija se kaže kot …",options:["tekoč, a nesmiseln govor","težavna artikulacija","motnje branja","popolna tišina"],correct:0,expl:"Razumevanje okrnjeno, izgovorjava tekoča."},
+  {q:"Fenomen 'lexical decision' je hitrejši, ko sta zaporedni besedi …",options:["semantično povezani","nepovezani","nasprotna pomena","ena beseda in ena psevdobeseda"],correct:0,expl:"Priming pospeši odločitev BESEDA/NE."},
+  {q:"V branju neznanih besed uporabljamo … pot v modelu dvo-tirnega branja (dual route).",options:["neposredno leksikalno","fonološko (grafem‑fonem) pretvorbo","semantično mapiranje","ortografsko konkurenco"],correct:1,expl:"Psevdobesede → GPC."},
+  {q:"Jezikovna relativnost (Whorf) trdi, da …",options:["jezik vpliva na mišljenje","mišljenje je univerzalno, neodvisno od jezika","jezik ne vodi kategorij","vsi jeziki imajo isto slovnico"],correct:0,expl:"Lingvistični relativizem."},
+  {q:"Priming izgovorjave homonima (\"roka\" v slovenščini) pokaže, da …",options:["kontekst aktivira ustrezen pomen","homonimi nimajo več pomenov","semantika sledi fonologiji","ni vpliva konteksta"],correct:0,expl:"Kontekst hitro izbere ustrezen semantični vozlišče."},
+  {q:"'Tip-of-the-finger' fenomen pri gluhih je analog …",options:["TOT pri govornih besedah","proceduralnem spominu","vizualni agnoziji","motorični amneziji"],correct:0,expl:"Neuspešni priklic znakovnega pojma."},
+  {q:"V eksperimentu serijskega reda ovojnic (envelope task) je pokazano, da otrok razume …",options:["pragmatični kontekst","metaforični pomen","frekvenco \"oseb\"","frazni stres"],correct:0,expl:"Pragmatična kompetenca se razvija postopoma."},
+  {q:"Disleksija je pogosto povezana z deficitom …",options:["fonološke obdelave","vizualne ostrine","semantičnega spomina","motoričnih spretnosti"],correct:0,expl:"Težave v GPC in fonološkem zavedanju."},
+  {q:"Prizadetost fonološke zanke vpliva najbolj na učenje …",options:["tujih besed","motoričnih zaporedij","epizodičnih dogodkov","prostorskih poti"],correct:0,expl:"Fonološki loop ključen za fonološko kodiranje."},
+  {q:"V 'word superiority effect' črko hitreje prepoznamo, ko je …",options:["v kontekstu prave besede","izolirana","v psevdobesedi","v številčnem nizu"],correct:0,expl:"Top‑down iz besede olajša detekcijo."},
+  {q:"Centralna izvršilna funkcija 'posodabljanje' se testira s … nalogo.",options:["N-back","Stroop","Go/No‑go","ravenova matrika"],correct:0,expl:"N‑back zahteva stalno posodabljanje delovnega spomina."},
+  {q:"Najvišji učinek 'spacing' dosežemo, ko so ponovitve razporejene …",options:["eksponentno oddaljene","zaporedno","naključno","vse naenkrat"],correct:0,expl:"Daljši presledki proti koncu – optimalni razmik."},
+  {q:"Kateri tip spomina je najbolj prizadet pri Alzheimerjevi bolezni?",options:["epizodični spomin","proceduralni spomin","senzorni spomin","delovni spomin"],correct:0,expl:"Hipokampus in medialni temporalni režnji – epizodična amnezija."},
+  {q:"Katera struktura je ključna za prostorski spomin in navigacijo?",options:["hipokampus","amigdala","cerebelum","temporalni korteks"],correct:0,expl:"Place cells v hipokampusu kodirajo lokacijo v prostoru."},
+  {q:"V 'semantic priming' eksperimentih je reakcijski čas krajši, ko je ciljna beseda …",options:["semantično povezana s predhodno besedo","nepovezana","nasprotnega pomena","homonim"],correct:0,expl:"Aktivacija semantične mreže pospeši prepoznavo sorodnih besed."}
+];
+
+// ====== Logika kviza ======
+let current=0,score=0,wrong=[];
+const qEl=document.getElementById('question');
+const ansEl=document.getElementById('answers');
+const expEl=document.getElementById('explanation');
+const nextBtn=document.getElementById('next-btn');
+const scoreEl=document.getElementById('score');
+
+function loadQuestion(){
+  const item=quizData[current];
+  qEl.textContent=`(${current+1}/${quizData.length}) `+item.q;
+  ansEl.innerHTML='';
+  expEl.style.display='none';
+  nextBtn.style.display='none';
+  item.options.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='answer';
+    b.textContent=String.fromCharCode(65+i)+') '+opt;
+    b.onclick=()=>selectAnswer(b,i);
+    ansEl.appendChild(b);
+  });
+  updateScore();
+}
+
+function selectAnswer(btn,idx){
+  const item=quizData[current];
+  document.querySelectorAll('button.answer').forEach(b=>b.disabled=true);
+  if(idx===item.correct){btn.classList.add('correct');score++;}
+  else{btn.classList.add('wrong');document.querySelectorAll('button.answer')[item.correct].classList.add('correct');wrong.push(item);}
+  expEl.textContent='Razlaga: '+item.expl;expEl.style.display='block';
+  nextBtn.style.display='inline-block';
+}
+
+nextBtn.onclick=()=>{current++;current<quizData.length?loadQuestion():showResult();};
+
+function showResult(){
+  qEl.textContent=`Konec kviza! Dosegel si ${score}/${quizData.length} točk.`;
+  ansEl.innerHTML='';
+  expEl.style.display='none';
+  nextBtn.style.display='none';
+  if(wrong.length){
+    const r=document.createElement('button');
+    r.textContent='Ponovi napačna ('+wrong.length+')';
+    r.onclick=()=>{quizData.length=0;wrong.forEach(q=>quizData.push(q));current=0;score=0;wrong=[];loadQuestion();};
+    ansEl.appendChild(r);
+  }
+}
+
+function updateScore(){scoreEl.textContent='Točke: '+score;}
+loadQuestion();
+</script>
+</body>
+</html>
